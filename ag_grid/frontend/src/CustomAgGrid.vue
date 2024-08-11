@@ -5,8 +5,10 @@
     :columnDefs="colDefs"
     :style="style"
     :localeText="localeText"
+    :rowSelection="rowSelection"
     class="ag-theme-quartz"
     @cell-value-changed="onCellValueChanged"
+    @selection-changed="onSelectionChanged"
   >
   </ag-grid-vue>
 </template>
@@ -18,7 +20,6 @@ import { useStreamlit } from './streamlit'
 import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the Data Grid
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import { AgGridVue } from 'ag-grid-vue3' // Vue Data Grid Component
-import { AG_GRID_LOCALE_BR } from '@ag-grid-community/locale'
 
 export default {
   name: 'CustomAgGrid',
@@ -28,6 +29,7 @@ export default {
   },
   setup(props) {
     useStreamlit()
+
     // Row Data: The data to be displayed.
     const rowData = computed(() => props.args.rowData)
 
@@ -35,6 +37,9 @@ export default {
     const colDefs = computed(() => props.args.colDefs)
 
     const style = computed(() => props.args.style)
+
+    // Row Selection: "single" or "multiple"
+    const rowSelection = computed(() => props.args.rowSelection || 'single')
 
     const localeText = ref({}) // Placeholder for the dynamically loaded locale
 
@@ -55,12 +60,22 @@ export default {
     const onCellValueChanged = (event) => {
       // Example: Send updated data back to Streamlit or handle it otherwise
       Streamlit.setComponentValue({
-        index: event.rowIndex,
-        field: event.colDef.field,
-        oldValue: event.oldValue,
-        newValue: event.newValue,
-        data: event.data
+        edited: {
+          index: event.rowIndex,
+          field: event.colDef.field,
+          oldValue: event.oldValue,
+          newValue: event.newValue,
+          data: event.data
+        }
       })
+    }
+
+    const onSelectionChanged = (event) => {
+      const selectedRows = event.api.getSelectedRows()
+      if (selectedRows.length > 0) {
+        // Return the selected row data to Streamlit or handle it otherwise
+        Streamlit.setComponentValue({ selected: selectedRows })
+      }
     }
 
     return {
@@ -68,7 +83,9 @@ export default {
       colDefs,
       style,
       localeText,
-      onCellValueChanged
+      rowSelection,
+      onCellValueChanged,
+      onSelectionChanged
     }
   }
 }

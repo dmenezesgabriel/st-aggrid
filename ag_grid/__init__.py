@@ -60,10 +60,15 @@ AGGridLocale = Literal[
     'AG_GRID_LOCALE_UA', 'AG_GRID_LOCALE_PK', 'AG_GRID_LOCALE_VN'
 ]
 
+AGGridRowSelection = Literal[
+    "single", "multiple"
+]
+
 def ag_grid(
         df: pd.DataFrame,
         column_defs,
         locale_text: AGGridLocale = "AG_GRID_LOCALE_BR",
+        row_selection: AGGridRowSelection = "single",
         style: str="height: 200",
         key=None
     ):
@@ -80,6 +85,7 @@ def ag_grid(
         rowData=row_data,
         colDefs=column_defs,
         localeText=locale_text,
+        rowSelection=row_selection,
         style=style,
         key=key,
         default={}
