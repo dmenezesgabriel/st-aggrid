@@ -6,7 +6,7 @@
     :style="[style, gridStyle]"
     :localeText="localeText"
     :rowSelection="rowSelection"
-    class="ag-theme-quartz"
+    class="ag-theme-quartz custom-scrollbar"
     @cell-value-changed="onCellValueChanged"
     @selection-changed="onSelectionChanged"
   >
@@ -108,3 +108,26 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+/* Custom scrollbar style to mimic Streamlit's scrollbar */
+.custom-scrollbar ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar ::-webkit-scrollbar-thumb {
+  background-color: var(--secondary-background-color);
+  border-radius: 4px;
+}
+
+.custom-scrollbar ::-webkit-scrollbar-track {
+  background-color: var(--background-color);
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary-background-color) var(--background-color);
+}
+</style>
