@@ -3,7 +3,7 @@
   <ag-grid-vue
     :rowData="rowData"
     :columnDefs="colDefs"
-    :style="style"
+    :style="[style, gridStyle]"
     :localeText="localeText"
     :rowSelection="rowSelection"
     class="ag-theme-quartz"
@@ -42,6 +42,23 @@ export default {
     const rowSelection = computed(() => props.args.rowSelection || 'single')
 
     const localeText = ref({}) // Placeholder for the dynamically loaded locale
+
+    // https://www.ag-grid.com/javascript-data-grid/global-style-customisation-variables/
+    const gridStyle = ref({
+      '--ag-foreground-color': 'var(--text-color)',
+      '--ag-header-background-color': 'var(--background-color)',
+      '--ag-panel-background-color': 'var(--primary-color)',
+      '--ag-active-color': 'var(--primary-color)',
+      '--ag-background-color': 'var(--background-color)',
+      '--ag-odd-row-background-color': 'var(--secondary-background-color)',
+      '--ag-header-foreground-color': 'var(--text-color)',
+      '--ag-font-family': 'var(--font)',
+      '--ag-row-hover-color': 'var(--secondary-background-color)',
+      '--ag-border-color': 'var(--secondary-background-color)',
+      '--ag-row-foreground-color': 'var(--text-color)',
+      '--ag-data-color': 'var(--text-color)',
+      '--ag-icon-color': 'var(--text-color)'
+    })
 
     const loadLocale = async () => {
       try {
@@ -84,6 +101,7 @@ export default {
       style,
       localeText,
       rowSelection,
+      gridStyle,
       onCellValueChanged,
       onSelectionChanged
     }
