@@ -19,7 +19,7 @@ import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied 
 import { AgGridVue } from 'ag-grid-vue3' // Vue Data Grid Component
 
 export default {
-  name: 'MyComponent',
+  name: 'CustomAgGrid',
   props: ['args'], // Arguments that are passed to the plugin in Python are accessible in prop "args"
   components: {
     AgGridVue // Add Vue Data Grid component
