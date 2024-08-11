@@ -4,6 +4,7 @@
     :rowData="rowData"
     :columnDefs="colDefs"
     :style="style"
+    :localeText="localeText"
     class="ag-theme-quartz"
     @cell-value-changed="onCellValueChanged"
   >
@@ -11,12 +12,13 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { Streamlit } from 'streamlit-component-lib'
 import { useStreamlit } from './streamlit'
 import 'ag-grid-community/styles/ag-grid.css' // Mandatory CSS required by the Data Grid
 import 'ag-grid-community/styles/ag-theme-quartz.css' // Optional Theme applied to the Data Grid
 import { AgGridVue } from 'ag-grid-vue3' // Vue Data Grid Component
+import { AG_GRID_LOCALE_BR } from '@ag-grid-community/locale'
 
 export default {
   name: 'CustomAgGrid',
@@ -27,29 +29,45 @@ export default {
   setup(props) {
     useStreamlit()
     // Row Data: The data to be displayed.
-    const rowData = ref(props.args.rowData)
+    const rowData = computed(() => props.args.rowData)
 
     // Column Definitions: Defines the columns to be displayed.
-    const colDefs = ref(props.args.colDefs)
+    const colDefs = computed(() => props.args.colDefs)
 
-    const style = ref(props.args.style)
+    const style = computed(() => props.args.style)
+
+    const localeText = ref({}) // Placeholder for the dynamically loaded locale
+
+    const loadLocale = async () => {
+      try {
+        const module = await import('@ag-grid-community/locale')
+        localeText.value = module[props.args.localeText]
+      } catch (error) {
+        console.error(`Failed to load locale ${props.locale}:`, error)
+      }
+    }
+
+    // Load the locale when the component is mounted
+    onMounted(() => {
+      loadLocale()
+    })
 
     const onCellValueChanged = (event) => {
-      console.log('Cell Value Changed', event)
-      // You can access the row and column that was edited, as well as the new and old values
-      console.log('Row Index:', event.rowIndex)
-      console.log('Column:', event.colDef.field)
-      console.log('Old Value:', event.oldValue)
-      console.log('New Value:', event.newValue)
-
       // Example: Send updated data back to Streamlit or handle it otherwise
-      Streamlit.setComponentValue(event.data)
+      Streamlit.setComponentValue({
+        index: event.rowIndex,
+        field: event.colDef.field,
+        oldValue: event.oldValue,
+        newValue: event.newValue,
+        data: event.data
+      })
     }
 
     return {
       rowData,
       colDefs,
       style,
+      localeText,
       onCellValueChanged
     }
   }

@@ -4,19 +4,22 @@ from ag_grid import ag_grid
 
 df = pd.DataFrame(
     [
-       {"command": "st.selectbox", "rating": 4, "is_widget": True},
-       {"command": "st.balloons", "rating": 5, "is_widget": False},
-       {"command": "st.time_input", "rating": 3, "is_widget": True},
+    {'Product': 'Laptop', 'Category': 'Electronics', 'Price': 1200, 'Stock': 50, 'Brand': 'BrandA'},
+    {'Product': 'Smartphone', 'Category': 'Electronics', 'Price': 800, 'Stock': 150, 'Brand': 'BrandB'},
+    {'Product': 'Tablet', 'Category': 'Electronics', 'Price': 300, 'Stock': 100, 'Brand': 'BrandC'},
+    {'Product': 'Headphones', 'Category': 'Accessories', 'Price': 150, 'Stock': 200, 'Brand': 'BrandD'},
+    {'Product': 'Smartwatch', 'Category': 'Wearables', 'Price': 200, 'Stock': 120, 'Brand': 'BrandE'}
    ]
 )
-column_config = [
-    { "field": name, "editable": True } for name in df.columns
+column_defs = [
+    { "field": name, "filter": True, "editable": True } for name in df.columns
 ]
 
 edited_dataframe = ag_grid(
     df=df,
-    column_config=column_config,
+    column_defs=column_defs,
     style="height: 500px; width: 620px",
+    locale_text="AG_GRID_LOCALE_BR",
     key="my_grid"
 )
 st.write(edited_dataframe)

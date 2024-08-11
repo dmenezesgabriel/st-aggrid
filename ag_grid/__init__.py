@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import streamlit.components.v1 as components
-
+from typing import Literal
 # Create a _RELEASE constant. We'll set this to False while we're developing
 # the component, and True when we're ready to package and distribute it.
 # (This is, of course, optional - there are innumerable ways to manage your
@@ -47,7 +47,26 @@ else:
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-def ag_grid(df: pd.DataFrame, column_config, style: str="height: 200", key=None):
+
+# https://www.ag-grid.com/vue-data-grid/localisation/
+AGGridLocale = Literal[
+    'AG_GRID_LOCALE_EG', 'AG_GRID_LOCALE_BG', 'AG_GRID_LOCALE_HK', 'AG_GRID_LOCALE_CN',
+    'AG_GRID_LOCALE_TW', 'AG_GRID_LOCALE_HR', 'AG_GRID_LOCALE_CZ', 'AG_GRID_LOCALE_DK',
+    'AG_GRID_LOCALE_NL', 'AG_GRID_LOCALE_FI', 'AG_GRID_LOCALE_FR', 'AG_GRID_LOCALE_DE',
+    'AG_GRID_LOCALE_GR', 'AG_GRID_LOCALE_IL', 'AG_GRID_LOCALE_HU', 'AG_GRID_LOCALE_IT',
+    'AG_GRID_LOCALE_JP', 'AG_GRID_LOCALE_KR', 'AG_GRID_LOCALE_NO', 'AG_GRID_LOCALE_IR',
+    'AG_GRID_LOCALE_PL', 'AG_GRID_LOCALE_PT', 'AG_GRID_LOCALE_BR', 'AG_GRID_LOCALE_RO',
+    'AG_GRID_LOCALE_SK', 'AG_GRID_LOCALE_ES', 'AG_GRID_LOCALE_SE', 'AG_GRID_LOCALE_TR',
+    'AG_GRID_LOCALE_UA', 'AG_GRID_LOCALE_PK', 'AG_GRID_LOCALE_VN'
+]
+
+def ag_grid(
+        df: pd.DataFrame,
+        column_defs,
+        locale_text: AGGridLocale = "AG_GRID_LOCALE_BR",
+        style: str="height: 200",
+        key=None
+    ):
     # Call through to our private component function. Arguments we pass here
     # will be sent to the frontend, where they'll be available in an "args"
     # dictionary.
@@ -59,7 +78,8 @@ def ag_grid(df: pd.DataFrame, column_config, style: str="height: 200", key=None)
 
     component_value = _component_func(
         rowData=row_data,
-        colDefs=column_config,
+        colDefs=column_defs,
+        localeText=locale_text,
         style=style,
         key=key,
         default={}
